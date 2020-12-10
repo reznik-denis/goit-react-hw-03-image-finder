@@ -8,7 +8,7 @@ import Modal from './Components/Modal/Modal';
 class App extends Component {
   state = {
     search: '',
-    showModal: true
+    showModal: false
   }
 
   toggleModal = () => {
@@ -32,7 +32,7 @@ class App extends Component {
         <Searchbar onSubmit={this.formSubmitHendler} />
         <ImageGallery onClick={this.toggleModal}/>
         {showModal && <Modal onClose={ this.toggleModal }>
-          <img src="" alt="" onClick={this.toggleModal}/>
+          <img src="" alt=""/>
         </Modal>}
     </div>
   );
