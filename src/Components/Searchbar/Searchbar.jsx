@@ -7,11 +7,15 @@ export default class Searchbar extends Component {
     }
 
     handleChange = event => {
-        this.setState({ search: event.currentTarget.value });
+        this.setState({ search: event.currentTarget.value.toLowerCase() });
     };
 
     handleSubmit = event => {
         event.preventDefault();
+        if (this.state.search.trim() === '') {
+            alert('Введите имя картинки');
+            return
+        }
         this.props.onSubmit(this.state);
         this.reset();
     };
