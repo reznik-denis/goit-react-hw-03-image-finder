@@ -4,10 +4,11 @@ import './App.css';
 import Searchbar from './Components/Searchbar/Searchbar';
 import ImageGallery from './Components/ImageGallery/ImageGallery';
 import Modal from './Components/Modal/Modal';
+import { ToastContainer } from 'react-toastify';
 
 class App extends Component {
   state = {
-    pictures: null,
+    pictures: '',
     showModal: false,
     loading: false
   }
@@ -26,7 +27,7 @@ class App extends Component {
     fetch(`${URL}?q=${search}&page=1&key=${KEY}&image_type=photo&orientation=horizontal&per_page=12`)
       .then(res => res.json())
       .then(pictures => this.setState({ pictures }))
-        .finally(() => this.setState({ loading: false }));
+      .finally(() => this.setState({ loading: false }));
   };
 
   render() {
@@ -40,12 +41,23 @@ class App extends Component {
           height={100}
           width={100}
         />}
-        {/* <ImageGallery
+        <ImageGallery
           pictures={pictures}
-          onClick={this.toggleModal} /> */}
+          onClick={this.toggleModal} />
         {showModal && <Modal onClose={ this.toggleModal }>
           <img src="" alt=""/>
         </Modal>}
+        <ToastContainer
+          position="bottom-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
     </div>
   );
   }

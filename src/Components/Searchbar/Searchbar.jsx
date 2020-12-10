@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import s from './Searchbar.module.css';
 
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 export default class Searchbar extends Component {
     state = {
         search: '',
@@ -11,9 +14,10 @@ export default class Searchbar extends Component {
     };
 
     handleSubmit = event => {
+        
         event.preventDefault();
         if (this.state.search.trim() === '') {
-            alert('Введите имя картинки');
+            toast.error("Введите имя картинки!");
             return
         }
         this.props.onSubmit(this.state);
