@@ -1,25 +1,43 @@
-import logo from './logo.svg';
+import React, { Component } from 'react';
+// import Loader from "react-loader-spinner";
 import './App.css';
+import Searchbar from './Components/Searchbar/Searchbar';
+import ImageGallery from './Components/ImageGallery/ImageGallery';
+import Modal from './Components/Modal/Modal';
 
-function App() {
-  return (
+class App extends Component {
+  state = {
+    search: '',
+    showModal: true
+  }
+
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
+    }));
+  };
+
+  formSubmitHendler = ({search}) => {
+    // if (this.state.contacts.find(cont => cont.name === contact.name)) {
+    //   alert(`${contact.name} is already in contacts`);
+    //   return
+    // }
+    this.setState( { search: search });
+  };
+
+  render() {
+    const { showModal } = this.state;
+    return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <Searchbar onSubmit={this.formSubmitHendler} />
+        <ImageGallery onClick={this.toggleModal}/>
+        {showModal && <Modal onClose={ this.toggleModal }>
+          <img src="" alt="" onClick={this.toggleModal}/>
+        </Modal>}
     </div>
   );
+  }
+  
 }
 
 export default App;
