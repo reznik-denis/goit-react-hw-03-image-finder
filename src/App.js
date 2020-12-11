@@ -4,15 +4,18 @@ import './App.css';
 import Searchbar from './Components/Searchbar/Searchbar';
 import ImageGallery from './Components/ImageGallery/ImageGallery';
 import Modal from './Components/Modal/Modal';
+import LoadMore from './Components/LoadMore/LoadMore';
 import { ToastContainer } from 'react-toastify';
 
 class App extends Component {
   state = {
-    pictures: null,
+    picture: [],
+    search: null,
     showModal: false,
     loading: false,
     error: null,
-    largeImage: ''
+    largeImage: '',
+    pageFetch: 1
   }
 
   toggleModal = (largeImageURL) => {
@@ -23,24 +26,33 @@ class App extends Component {
   };
 
   formSubmitHendler = ({search}) => {
-    const  KEY = '19046001-7d44b7f00f708df4674bb235b';
-    const URL = 'https://pixabay.com/api/';
-    this.setState({ loading: true, pictures: null });
+    this.setState({ loading: true, picture: [], search});
 
-    fetch(`${URL}?q=${search}&page=1&key=${KEY}&image_type=photo&orientation=horizontal&per_page=12`)
+    this.fetshSearch();
+  };
+
+  fetshSearch = () => {
+    const KEY = '19046001-7d44b7f00f708df4674bb235b';
+    const URL = 'https://pixabay.com/api/';
+    const { search, pageFetch } = this.state;
+    fetch(`${URL}?q=${search}&page=${pageFetch}&key=${KEY}&image_type=photo&orientation=horizontal&per_page=12`)
       .then(res => {
         if (res.ok) {
           return res.json();
         }
         return Promise.reject(new Error('Картинки с таким именем отсутсвуют'))
-      })
-      .then(pictures => this.setState({ pictures }))
+      }).then(pictures => this.setState(prevState => (
+        { picture: ((this.state.picture === []) ? pictures.hits : ([...prevState.picture, ...pictures.hits])) }
+      )))
       .catch(error => (this.setState({error})))
-      .finally(() => this.setState({ loading: false }));
-  };
+      .finally(() => this.setState(prevState => ({
+        loading: false,
+        pageFetch: prevState.pageFetch + 1
+      }))); 
+  }
 
   render() {
-    const {pictures, showModal, error, largeImage} = this.state;
+    const {picture, showModal, error, largeImage, pageFetch} = this.state;
     return (
       <div className="App">
         {error && <h1>{ error.massage }</h1>}
@@ -52,8 +64,9 @@ class App extends Component {
           width={100}
         />}
         <ImageGallery
-          pictures={pictures}
+          pictures={picture}
           onClick={this.toggleModal} />
+        {picture !== [] && pageFetch >= 2 && <LoadMore onClick={this.fetshSearch}/>}
         {showModal && <Modal onClose={ this.toggleModal }>
           <img src={largeImage} alt=""/>
         </Modal>}
